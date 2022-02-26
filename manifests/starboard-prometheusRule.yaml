@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: "starboard-exporter"
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 8.3.6
+    prometheus: k8s
+    role: alert-rules
+  name: starboard-grafana-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: starboard-exporter
+    rules:
+    - alert: StarboardVulnerabilityReport
+      annotations:
+        message: 'New Starboard Vulnerability report'
+        #runbook_url: https://runbooks.prometheus-operator.dev/runbooks/grafana/grafanarequestsfailing
+      expr: |
+        sum(starboard_exporter_vulnerabilityreport_image_vulnerability_severity_count{severity=~"CRITICAL|HIGH"}) by (image_registry, image_repository, image_tag)
+      for: 1m
+      labels:
+        severity: alert
