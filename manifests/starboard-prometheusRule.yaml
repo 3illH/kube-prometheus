@@ -17,9 +17,7 @@ spec:
     rules:
     - alert: StarboardVulnerabilityReport
       annotations:
-        description: New Starboard Scan Completed in controller {{$labels.controller}} in {{$labels.namespace}} namespace.
-          Image:{{$labels.image_registry}}/{{$labels.image_repository}}:{{$labels.image_tag}
-        summary: 'New Starboard Vulnerability report'
+        message: 'New Starboard Vulnerability report'
         #runbook_url: https://runbooks.prometheus-operator.dev/runbooks/grafana/grafanarequestsfailing
       expr: |
         sum(starboard_exporter_vulnerabilityreport_image_vulnerability_severity_count{severity=~"CRITICAL|HIGH"}) by (image_registry, image_repository, image_tag)
